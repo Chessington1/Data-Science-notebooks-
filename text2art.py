@@ -1,9 +1,9 @@
 from art import text2art
 
 def name_art():
-    name = input("Emmanuel Nyamekye: ")
+    name = "Emmanuel Nyamekye"   # fixed name (no user input)
     art = text2art(name)
     print(art)
 
-    # Run  the Program
-    name_art()
+# Run the program
+name_art()
