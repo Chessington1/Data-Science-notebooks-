@@ -1,9 +1,13 @@
 # 🎉 Colorful Happy Birthday with Real Music
-import time
-from random import randint
 from playsound import playsound
 import threading
-
+import time
+from random import randint
+def play_music():
+    playsound('happy_birthday.mp3')
+    thread = threading.Thread(target=play_music)
+    thread.start()
+    
 name = "Emmanuel"
 
 colors = [
