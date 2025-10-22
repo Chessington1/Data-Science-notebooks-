@@ -1,13 +1,14 @@
 import time
 import threading
-from playsound import playsound
+import pygame
 
-# 🎵 Function to play the song in background
+# 🎵 Function to play the music in background (looped)
 def playMusic():
-    while True:  # repeat the song in a loop
-        playsound('I wanna dance.mp3')
+    pygame.mixer.init()
+    pygame.mixer.music.load('I wanna dance.mp3')  # Your song file name
+    pygame.mixer.music.play(-1)  # -1 = repeat forever
 
-# 🎤 Function to print the lyrics line by line
+# 🎤 Function to print lyrics with typing animation
 def printLyrics():
     lines = [
         ("I wanna da-", 0.6),
@@ -30,13 +31,15 @@ def printLyrics():
     for text, delay in lines:
         for char in text:
             print(char, end="", flush=True)
-            time.sleep(0.05)  # typing speed
-        print()  # new line after each lyric
+            time.sleep(0.05)  # typing speed per character
+        print()  # new line
         time.sleep(delay)  # pause between lines
 
-# 🎬 Start playing music and lyrics together
+# 🎬 Start the music in a background thread
 music_thread = threading.Thread(target=playMusic, daemon=True)
 music_thread.start()
 
-# Run the lyric animation
+# 🎤 Run the lyric animation
 printLyrics()
+
+
