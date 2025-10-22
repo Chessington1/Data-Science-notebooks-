@@ -16,7 +16,7 @@ def animation():
         space = ' ' * count
 
         if i % 10 == 0:
-            print(space + '🎂 Happy Birthday!')
+            print(space + '🎂 Happy Birthday Emmanuel!')
         elif i % 9 == 0:
             print(space + '🎉')
         elif i % 5 == 0:
@@ -26,7 +26,7 @@ def animation():
         elif i % 7 == 0:
             print(space + '🍫')
         elif i % 6 == 0:
-            print(space + 'Happy Birthday! 💖')
+            print(space + 'Happy Birthday Emmanuel! 💖')
         else:
             print(space + '🔶')
 
