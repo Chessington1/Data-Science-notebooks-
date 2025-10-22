@@ -4,7 +4,8 @@ from random import randint
 from playsound import playsound
 
 def play_music():
-    playsound('happy_birthday.mp3')  # Your renamed music file
+    while True:
+        playsound('happy_birthday.mp3')  # Your renamed music file
 
 def animation():
     for i in range(1, 85):
@@ -34,7 +35,7 @@ def animation():
 
 while True:
     # Start the song and animation together
-    music_thread = threading.Thread(target=play_music)
+    music_thread = threading.Thread(target=play_music, daemon=True)
     music_thread.start()
 
     animation()
