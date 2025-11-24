@@ -49,10 +49,13 @@ class FieldDataProcessor:
             LEFT JOIN soil_and_crop_features USING (Field_ID)
             LEFT JOIN farm_management_features USING (Field_ID)
         """
+        
+        # **Weather mapping URL**
+        self.weather_map_data = "https://raw.githubusercontent.com/Explore-AI/Public-Data/master/Maji_Ndogo/Weather_data_field_mapping.csv"
 
-    # ---------------------------------------------------------
-    # DATA LOADING
-    # ---------------------------------------------------------
+        # ---------------------------------------------------------
+        # DATA LOADING
+        # ---------------------------------------------------------
 
     def ingest_sql_data(self):
         """
@@ -73,9 +76,9 @@ class FieldDataProcessor:
             logger.error(f"Failed to ingest SQL data: {e}")
             raise e
 
-    # ---------------------------------------------------------
-    # CLEANING METHODS
-    # ---------------------------------------------------------
+        # ---------------------------------------------------------
+        # CLEANING METHODS
+        # ---------------------------------------------------------
 
     def rename_columns(self):
         """
@@ -149,9 +152,9 @@ class FieldDataProcessor:
         """
         return read_from_web_CSV(self.weather_map_data)
 
-    # ---------------------------------------------------------
-    # FULL PROCESS PIPELINE
-    # ---------------------------------------------------------
+        # ---------------------------------------------------------
+        # FULL PROCESS PIPELINE
+        # ---------------------------------------------------------
 
     def process(self, weather_df=None):
         """
