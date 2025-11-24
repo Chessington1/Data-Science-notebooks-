@@ -141,6 +141,13 @@ class FieldDataProcessor:
         )
 
         return self
+    
+    
+    def weather_station_mapping(self):
+        """
+        Read the weather mapping CSV from the web.
+        """
+        return read_from_web_CSV(self.weather_map_data)
 
     # ---------------------------------------------------------
     # FULL PROCESS PIPELINE
