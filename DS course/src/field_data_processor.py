@@ -1,11 +1,10 @@
 import pandas as pd
+from data_ingestion import create_db_engine, query_data, read_from_web_CSV
 import logging
 
 logger = logging.getLogger("field_data_processor")
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 class FieldDataProcessor:
     """
