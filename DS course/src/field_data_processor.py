@@ -67,10 +67,26 @@ class FieldDataProcessor:
         return self
 
     def apply_corrections(self, column_name='Crop_type', abs_column='Elevation'):
+    """
+    Applies elevation correction (absolute value)
+    and crop type typo corrections using crop_corrections mapping.
+    """
+    # Fix elevation
+    if abs_column in self.df.columns:
         self.df[abs_column] = self.df[abs_column].abs()
-        self.df[column_name] = self.df[column_name].apply(
-            lambda crop: self.values_to_rename.get(crop, crop)
+
+    # Fix crop type typos
+    if column_name in self.df.columns:
+        self.df[column_name] = (
+            self.df[column_name]
+            .astype(str)
+            .str.strip()
+            .replace(self.crop_corrections)
         )
+
+    logger.info("Applied corrections: elevation fixed and crop types corrected.")
+    return self
+
 
     def fix_elevation(self):
         """
