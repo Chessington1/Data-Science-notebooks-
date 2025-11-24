@@ -55,7 +55,7 @@ class FieldDataProcessor:
         except Exception as e:
             logger.error(f"Failed to ingest SQL data: {e}")
             raise e
-
+    
     def rename_columns(self):
         """
         Rename columns according to the notebook's corrections (swap Annual_yield and Crop_type).
@@ -65,6 +65,12 @@ class FieldDataProcessor:
             self.df.rename(columns={'Crop_type_Temp': 'Crop_type'}, inplace=True)
             logger.info("Columns renamed: Annual_yield <-> Crop_type")
         return self
+
+    def apply_corrections(self, column_name='Crop_type', abs_column='Elevation'):
+        self.df[abs_column] = self.df[abs_column].abs()
+        self.df[column_name] = self.df[column_name].apply(
+            lambda crop: self.values_to_rename.get(crop, crop)
+        )
 
     def fix_elevation(self):
         """
