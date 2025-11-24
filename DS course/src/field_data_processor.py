@@ -6,23 +6,59 @@ logger = logging.getLogger("field_data_processor")
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
+
 class FieldDataProcessor:
     """
-    Class to clean and process field survey data.
+    Class to fetch, clean, and process field survey data.
     """
 
-    def __init__(self, df: pd.DataFrame):
+    def __init__(self, df: pd.DataFrame = None):
         """
-        Initialize with a DataFrame.
+        Initialize with a DataFrame (optional). If df is None, you can use ingest_sql_data to fetch it.
         """
-        if df.empty:
-            raise ValueError("Input field DataFrame is empty.")
-        self.df = df.copy()
-        logger.info(f"FieldDataProcessor initialized with {self.df.shape[0]} rows and {self.df.shape[1]} columns.")
+        self.df = df.copy() if df is not None else pd.DataFrame()
+        self.engine = None
+        logger.info(f"FieldDataProcessor initialized with "
+                    f"{self.df.shape[0]} rows and {self.df.shape[1]} columns.")
+
+        # Mapping for crop type corrections
+        self.crop_corrections = {'cassaval': 'cassava', 'wheatn': 'wheat', 'teaa': 'tea'}
+
+        # Column renaming mapping
+        self.columns_to_swap = {'Annual_yield': 'Crop_type', 'Crop_type': 'Annual_yield'}
+
+        # Database path and query
+        self.db_path = 'sqlite:///Maji_Ndogo_farm_survey_small.db'
+        self.sql_query = """
+            SELECT *
+            FROM geographic_features
+            LEFT JOIN weather_features USING (Field_ID)
+            LEFT JOIN soil_and_crop_features USING (Field_ID)
+            LEFT JOIN farm_management_features USING (Field_ID)
+        """
+
+    def ingest_sql_data(self):
+        """
+        Connects to the database, queries the field data, and stores it in self.df.
+        Returns the DataFrame.
+        """
+        try:
+            # Create engine
+            self.engine = create_db_engine(self.db_path)
+            logger.info("Database engine created successfully.")
+
+            # Query data
+            self.df = query_data(self.engine, self.sql_query)
+            logger.info(f"Successfully loaded data. Shape: {self.df.shape}")
+
+            return self.df
+        except Exception as e:
+            logger.error(f"Failed to ingest SQL data: {e}")
+            raise e
 
     def rename_columns(self):
         """
-        Rename columns according to the notebook's corrections.
+        Rename columns according to the notebook's corrections (swap Annual_yield and Crop_type).
         """
         if 'Annual_yield' in self.df.columns and 'Crop_type' in self.df.columns:
             self.df.rename(columns={'Annual_yield': 'Crop_type_Temp', 'Crop_type': 'Annual_yield'}, inplace=True)
@@ -44,8 +80,7 @@ class FieldDataProcessor:
         Fix typos in crop type column.
         """
         if column in self.df.columns:
-            corrections = {'cassaval': 'cassava', 'wheatn': 'wheat', 'teaa': 'tea'}
-            self.df[column] = self.df[column].str.strip().replace(corrections)
+            self.df[column] = self.df[column].str.strip().replace(self.crop_corrections)
             logger.info(f"Crop type corrected in column '{column}'.")
         return self
 
